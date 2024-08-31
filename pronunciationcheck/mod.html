@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <button id="recordButton">Start Recording</button>
+        <textarea id="textBox" rows="10" cols="50" readonly></textarea>
+        
+        <div class="reference-container">
+            <input type="text" id="referenceText" placeholder="Enter reference text">
+            <button id="compareButton">Compare Text</button>
+        </div>
+
+        <div id="comparisonResult"></div>
+    </div>
+
+    <script>
+        var speech = false;
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+        const recognition = new SpeechRecognition();
+        recognition.interimResults = true;
+    
+        recognition.addEventListener('result', e => {
+            const transcript = Array.from(e.results)
+                .map(result => result[0])
+                .map(result => result.transcript)
+                .join('');
+    
+            document.getElementById("textBox").value = transcript;
+            console.log(transcript);
+        });
+    
+        // Start recording when the "Record" button is clicked
+        document.getElementById('recordButton').addEventListener('click', () => {
+            if (!speech) {
+                recognition.start();
+                recognition.addEventListener('end', recognition.start);
+                speech = true;
+                document.getElementById('recordButton').innerText = "Stop Recording";
+            } else {
+                recognition.removeEventListener('end', recognition.start);
+                recognition.stop();
+                speech = false;
+                document.getElementById('recordButton').innerText = "Start Recording";
+            }
+        });
+    
+        // Compare text when the "Compare Text" button is clicked
+        document.getElementById('compareButton').addEventListener('click', () => {
+            const recognizedText = document.getElementById('textBox').value.trim().toLowerCase();
+            const referenceText = document.getElementById('referenceText').value.trim().toLowerCase();
+    
+            let result = '';
+            if (recognizedText === referenceText) {
+                result = 'The recognized text matches the reference text.';
+            } else {
+                result = 'The recognized text does not match the reference text.';
+            }
+    
+            document.getElementById('comparisonResult').innerText = result;
+        });
+    </script>
+    
+</body>
+
+</html>
