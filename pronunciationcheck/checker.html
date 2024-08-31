@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pronunciation Checker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #e0f7fa;
+        }
+
+        .container {
+            text-align: center;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            color: white;
+        }
+
+        #recordButton {
+            background-color: #ff5722;
+        }
+
+        #recordButton:hover {
+            background-color: #e64a19;
+        }
+
+        #checkButton {
+            background-color: #4caf50;
+        }
+
+        #checkButton:hover {
+            background-color: #388e3c;
+        }
+
+        #playButton {
+            background-color: #2196f3;
+        }
+
+        #playButton:hover {
+            background-color: #1976d2;
+        }
+
+        #eraseButton {
+            background-color: #9e9e9e;
+        }
+
+        #eraseButton:hover {
+            background-color: #757575;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            background-color: #fafafa;
+            color: #333;
+            margin-bottom: 20px;
+            height: 150px;
+        }
+
+        .reference-container {
+            margin-top: 20px;
+        }
+
+        #comparisonResult {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .alphabet-container {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .alphabet-item {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .alphabet-item span {
+            display: block;
+            font-size: 36px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .alphabet-item .icon {
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* Add colors for each letter */
+        .letter-A { color: #f44336; } /* Red */
+        .letter-B { color: #e91e63; } /* Pink */
+        .letter-C { color: #9c27b0; } /* Purple */
+        .letter-D { color: #673ab7; } /* Deep Purple */
+        .letter-E { color: #3f51b5; } /* Indigo */
+        .letter-F { color: #2196f3; } /* Blue */
+        .letter-G { color: #03a9f4; } /* Light Blue */
+        .letter-H { color: #00bcd4; } /* Cyan */
+        .letter-I { color: #009688; } /* Teal */
+        .letter-J { color: #4caf50; } /* Green */
+        .letter-K { color: #8bc34a; } /* Light Green */
+        .letter-L { color: #cddc39; } /* Lime */
+        .letter-M { color: #ffeb3b; } /* Yellow */
+        .letter-N { color: #ffc107; } /* Amber */
+        .letter-O { color: #ff9800; } /* Orange */
+        .letter-P { color: #ff5722; } /* Deep Orange */
+        .letter-Q { color: #795548; } /* Brown */
+        .letter-R { color: #9e9e9e; } /* Grey */
+        .letter-S { color: #607d8b; } /* Blue Grey */
+        .letter-T { color: #000000; } /* Black */
+        .letter-U { color: #ffffff; background-color: #000000; } /* White on Black */
+        .letter-V { color: #ff5722; } /* Deep Orange */
+        .letter-W { color: #e91e63; } /* Pink */
+        .letter-X { color: #f44336; } /* Red */
+        .letter-Y { color: #ff9800; } /* Orange */
+        .letter-Z { color: #9c27b0; } /* Purple */
+
+        /* Celebration animation */
+        .celebration {
+            position: relative;
+            display: inline-block;
+        }
+
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background-color: #ff4081;
+            border-radius: 50% 50% 50% 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .balloon:nth-child(2) {
+            background-color: #4caf50;
+            animation-delay: 1s;
+        }
+
+        .balloon:nth-child(3) {
+            background-color: #2196f3;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-200px); }
+        }
+
+        .icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .icons-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <button id="recordButton"><i class="fas fa-microphone icon"></i>Start Recording</button>
+        <textarea id="textBox" readonly></textarea>
+        
+        <div class="reference-container">
+            <button id="checkButton"><i class="fas fa-check icon"></i>Check Pronunciation</button>
+            <button id="playButton"><i class="fas fa-volume-up icon"></i>Play Text</button>
+            <button id="eraseButton"><i class="fas fa-eraser icon"></i>Erase Text</button>
+        </div>
+
+        <div id="comparisonResult"></div>
+
+        <!-- Alphabet section -->
+        <div class="alphabet-container">
+            <div class="alphabet-item">
+                <span class="letter-A">A</span>
+                <i class="fas fa-volume-up icon"></i>
+            </div>
+            <div class="alphabet-item">
+                <span class="letter-B">B</span>
+                <i class="fas fa-volume-up icon"></i>
+            </div>
+            <div class="alphabet-item">
+                <span class="letter-C">C</span>
+                <i class="fas fa-volume-up icon"></i>
+            </div>
+            <!-- Add more alphabet items as needed -->
+        </div>
+
+        <div id="celebration" class="celebration"></div>
+    </div>
+
+    <script>
+        var speech = false;
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+        const recognition = new SpeechRecognition();
+        recognition.interimResults = true;
+    
+        recognition.addEventListener('result', e => {
+            const transcript = Array.from(e.results)
+                .map(result => result[0])
+                .map(result => result.transcript)
+                .join('');
+    
+            document.getElementById("textBox").value = transcript;
+            console.log(transcript);
+        });
+    
+        // Start recording when the "Record" button is clicked
+        document.getElementById('recordButton').addEventListener('click', () => {
+            if (!speech) {
+                recognition.start();
+                speech = true;
+                document.getElementById('recordButton').innerText = "Stop Recording";
+            } else {
+                recognition.stop();
+                speech = false;
+                document.getElementById('recordButton').innerText = "Start Recording";
+            }
+        });
+    
+        // Predefined reference texts
+        const referenceTexts = [
+            "Hello world",
+            "How are you today?",
+            "This is a test",
+            "Speech recognition is fun",
+            "Have a great day"
+        ];
+
+        // Check pronunciation when the "Check Pronunciation" button is clicked
+        document.getElementById('checkButton').addEventListener('click', () => {
+            const recognizedText = document.getElementById('textBox').value.trim().toLowerCase();
+            let result = 'Try again!';
+            
+            for (const refText of referenceTexts) {
+                if (recognizedText === refText.toLowerCase()) {
+                    result = 'Great job! Your pronunciation is correct.';
+                    showCelebration();
+                    break;
+                }
+            }
+
+            document.getElementById('comparisonResult').innerText = result;
+        });
+
+        // Play the text when the "Play Text" button is clicked
+        document.getElementById('playButton').addEventListener('click', function () {
+            const speechSynth = window.speechSynthesis;
+            const recognizedText = document.getElementById('textBox').value.trim();
+    
+            if (!speechSynth.speaking && recognizedText.length) {
+                const newUtter = new SpeechSynthesisUtterance(recognizedText);
+                speechSynth.speak(newUtter);
+                this.textContent = "Playing...";
+            }
+    
+            setTimeout(() => {
+                this.textContent = "Play Text";
+            }, 5000);
+        });
+
+        // Erase text when the "Erase Text" button is clicked
+        document.getElementById('eraseButton').addEventListener('click', () => {
+            document.getElementById('textBox').value = '';
+            document.getElementById('comparisonResult').innerText = '';
+            document.getElementById('recordButton').innerText = "Start Recording";
+            speech = false;
+        });
+
+        // Show celebration balloons
+        function showCelebration() {
+            const celebrationDiv = document.getElementById('celebration');
+            celebrationDiv.innerHTML = `
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+            `;
+            setTimeout(() => {
+                celebrationDiv.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>
